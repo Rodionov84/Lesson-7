@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
 <?php
 // форма, через которую на сервер можно загрузить JSON-файл c тестом
 
@@ -58,8 +52,7 @@ if (!empty($_FILES['tests'])) {
 			// сохраняем в файле json, дописываем в существующий файл с тестами
 			if (file_exists(LOCAL_JSON)) {
 				$local_file = file_get_contents(LOCAL_JSON); 
-				//Добавить редирект на список тестов, который будет отрабатывать после загрузки нового теста.
-				if (empty($local_file))
+					if (empty($local_file))
 					$local_file = '[]';
 			} else {
 				$local_file = '[]'; // пустой массив в JSON
@@ -76,9 +69,15 @@ if (!empty($_FILES['tests'])) {
 	if ($success === false)
 		echo "<p>Произошла ошибка при сохранении файла. Проверьте его содержимое.</p>";
 	else
-		echo "<p>Файл успешно сохранён!</p>";
+		header('Location:list.php');//Добавляем редирект на список тестов, который будет отрабатывать после загрузки нового теста.
 }
 ?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
 		<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" enctype="multipart/form-data">
 			<p>Выберите файл JSON с тестами</p>
 			<p><input type="file" name="tests"></p>

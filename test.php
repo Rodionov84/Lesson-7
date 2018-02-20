@@ -8,10 +8,15 @@
 		</style>
 	</head>
 	<body>
+
 <?php
+
 /*
 1.	Принимает в качестве GET-параметра номер теста и отображает форму теста.
 2.	Если форма отправлена, проверяет и показывает результат.
+
+3.  При прохождении теста запрашивать имя (нужно дополнительное поле под имя).
+    После прохождения теста генерировать PNG-сертификат с именем и оценкой.
 */
 
 define('LOCAL_JSON', 'tests.json');
@@ -33,6 +38,7 @@ if (!file_exists(LOCAL_JSON)) {
 	}
 }
 
+
 function show_test($test, $index) {
 	echo "<h1>{$test['test_name']}</h1>";
 	echo "<form method='post' action='{$_SERVER['SCRIPT_NAME']}?index={$index}'>";
@@ -46,7 +52,7 @@ function show_test($test, $index) {
 		echo "</div>";
 	}
 
-	echo "<input type='submit' value='Проверить'>";
+    echo "<input type='submit' value='Проверить'><br><br>";
 	echo "</form>";
 }
 
@@ -91,6 +97,17 @@ function check_answers($test, $user_answers) {
 		echo "</div>";
 	}
 }
-?>      <a href="list.php"><button>Вернуться к списку</button></a>
+
+?>   
+		<form method="POST" action="certificate.php" enctype="multipart/form-data">
+	      	<label>
+				Name: <input type="text" name="first_name">
+			</label>
+			<label>
+				SecondName: <input type="text" name="Second_name">
+			</label>
+	      	<input type="submit" value="Получить сертификат"> 
+		    <a href="list.php"><button>Вернуться к списку</button></a>
+
 	</body>
 </html>

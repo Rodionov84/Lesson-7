@@ -1,11 +1,4 @@
 <?php
-// форма, через которую на сервер можно загрузить JSON-файл c тестом
-
-/*
-Тест — это несколько вопросов.
-Вопрос — это текст вопроса, плюс несколько вариантов ответа. Один или несколько вариантов помечены как правильные.
-*/
-
 define('LOCAL_JSON', 'tests.json');
 define('MAX_UPLOAD_FILE_SIZE', 5*1024*1024);
 define('SAVE_JSON_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

@@ -5,7 +5,6 @@
 	</head>
 	<body>
 <?php
-// список загруженных тестов
 
 define('LOCAL_JSON', 'tests.json');
 

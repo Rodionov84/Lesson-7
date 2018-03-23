@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+<?php
+
+define('LOCAL_JSON', 'tests.json');
+
+if (!file_exists(LOCAL_JSON)) {
+    header("HTTP/1.1 404 Not Found");
+    exit("404");
+} else {
+    $tests = json_decode(file_get_contents(LOCAL_JSON), true);
+    $index = intval($_GET['index']); // (int) $number
+    if (!$tests[$index])
+    {
+        header("HTTP/1.1 404 Not Found");
+        exit("Test not found! 404");
+    }
+}
+
+?><!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -7,9 +24,7 @@
 			.red   { color: #990000; }
 		</style>
 	</head>
-	<body>
-
-<?php
+	<body><?php
 
 /*
 1.	Принимает в качестве GET-параметра номер теста и отображает форму теста.
@@ -19,24 +34,12 @@
     После прохождения теста генерировать PNG-сертификат с именем и оценкой.
 */
 
-define('LOCAL_JSON', 'tests.json');
-
-if (!file_exists(LOCAL_JSON)) {
-	echo "<p>Файл JSON с тестами не найден!</p>";
-} else {
-	$tests = json_decode(file_get_contents(LOCAL_JSON), true);
-	$index = intval($_GET['index']); // (int) $number
-	if ($tests[$index]) {
-		if (empty($_POST['ans'])) {
-			// пользователь ещё не ответил на тест, показать вопросы
-			show_test($tests[$index], $index);
-		} else {
-			check_answers($tests[$index], $_POST['ans']);
-		}
-	} else {
-		echo "<p>Не найден тест по указанному номеру!</p>";
-	}
-}
+    if (empty($_POST['ans'])) {
+        // пользователь ещё не ответил на тест, показать вопросы
+        show_test($tests[$index], $index);
+    } else {
+        check_answers($tests[$index], $_POST['ans']);
+    }
 
 
 function show_test($test, $index) {
@@ -52,7 +55,13 @@ function show_test($test, $index) {
 		echo "</div>";
 	}
 
-    echo "<input type='submit' value='Проверить'><br><br>";
+    echo "<label>
+				Name: <input type=\"text\" name=\"first_name\">
+			</label>
+			<label>
+				SecondName: <input type=\"text\" name=\"second_name\">
+			</label>
+	      	<input type='submit' value='Проверить и получить сертификат'><br><br>";
 	echo "</form>";
 }
 
@@ -63,7 +72,7 @@ function check_answers($test, $user_answers) {
 		// [0, 1] & [1] - пересечение множеств (intersect)
 		$correct_q_a = []; // индексы правильных вариантов
 		foreach ($question['answers'] as $ai => $answer) {
-			if ($answer['correct'])
+			if (isset($answer['correct']) && $answer['correct'])
 				$correct_q_a[] = $ai;
 		}
 		if (empty($user_answers[$qi]))
@@ -74,7 +83,7 @@ function check_answers($test, $user_answers) {
 
 	$count_correct = count(array_filter($result));
 	$count_all = count($result);
-	$percent = $count_correct / $count_all * 100;
+	$percent = round($count_correct / $count_all * 100, 2);
 	echo "<h1>Результаты: {$test['test_name']}</h1>";
 	echo "<p>Правильных: {$count_correct}</p>";
 	echo "<p>Всего: {$count_all}</p>";
@@ -96,18 +105,11 @@ function check_answers($test, $user_answers) {
 		echo "</ul>";
 		echo "</div>";
 	}
+    echo '<img src="certificate.php?first_name=' . $_POST["first_name"] . '&second_name=' . $_POST["second_name"] . '&persent=' . $percent . '">';
 }
 
-?>   
-		<form method="POST" action="certificate.php" enctype="multipart/form-data">
-	      	<label>
-				Name: <input type="text" name="first_name">
-			</label>
-			<label>
-				SecondName: <input type="text" name="Second_name">
-			</label>
-	      	<input type="submit" value="Получить сертификат"> 
-		    <a href="list.php"><button>Вернуться к списку</button></a>
+?>
+    <a href="list.php"><button>Вернуться к списку</button></a>
 
 	</body>
 </html>

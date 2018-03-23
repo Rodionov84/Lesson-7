@@ -1,7 +1,8 @@
 <?php
 
-$text = $_POST['first_name'];
-$text1 = $_POST['Second_name'];
+$text = substr($_GET['first_name'], 0, 10);
+$text1 = substr($_GET['second_name'], 0, 10);
+$percent = floatval($_GET['persent']);
 /*$percent = $_GET['percent'];
 var_dump($percent);*/
 $image = imagecreatetruecolor(745,530);
@@ -24,7 +25,7 @@ if (!file_exists($fontFile)) {
 }
 imagettftext($image, 30, 0, 180, 268, $textColor, $fontFile, $text);
 imagettftext($image, 30, 0, 380, 268, $textColor, $fontFile, $text1);
-imagettftext($image, 60, 0, 50, 268, $textColor, $fontFile, $percent);
+imagettftext($image, 30, 0, 180, 468, $textColor, $fontFile, $percent . "%");
 header('content-Type: image/png');
 
 imagepng($image);
